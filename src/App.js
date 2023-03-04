@@ -1,23 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { useState } from "react";
 
 function App() {
+  const [team, setTeam] = useState();
+  const [players, setPlayers] = useState();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div>
+      <h1>selecione o seu time</h1>
+      <form>
+        <select
+          onChange={(event) => {
+            setTeam(event.target.value);
+          }}
         >
-          Learn React
-        </a>
-      </header>
+          <option value="">Selecione...</option>
+          <option value="gremio">Gremio</option>
+          <option value="internacional">Internacional</option>
+        </select>
+        <button
+          disabled={!team}
+          type="button"
+          onClick={async () => {
+            const response = await fetch(`http://localhost:4000/teams/${team}`);
+            const resp = await response.json();
+
+            setPlayers(resp.players);
+          }}
+        >
+          submit
+        </button>
+        <ul>
+          {players?.map((player) => {
+            return <li key={player}>{player}</li>;
+          })}
+        </ul>
+      </form>
     </div>
   );
 }
